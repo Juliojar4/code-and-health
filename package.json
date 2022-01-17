@@ -1,0 +1,23 @@
+{
+  "name": "code_and_health",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "cpf-cnpj-validator": "^1.0.3",
+    "cpf-rg-validator": "^1.0.0",
+    "email-validator": "^2.0.4",
+    "express": "^4.17.2",
+    "jsonwebtoken": "^8.5.1",
+    "loopback": "^3.28.0",
+    "mongoose": "^6.1.6",
+    "nodemon": "^2.0.15"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./index.js localhost 3000"
+  },
+  "author": "Julio Jara",
+  "license": "ISC"
+}
