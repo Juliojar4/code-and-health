@@ -1,101 +1,29 @@
-const Medic = require('../models/Medic')
+const Medic = require('../models/Medic');
 const jwt = require('jsonwebtoken');
 
 //* Helpers
-const creatToken = require("../helpers/creat_token")
-const getToken = require('../helpers/getToken')
-
+const creatToken = require("../helpers/creat_token");
+const getToken = require('../helpers/getToken');
 //* Validadors
-const validatorEmail = require("email-validator")
-const validatorCpf = require('cpf-cnpj-validator')
-const ValidatorRg = require('cpf-rg-validator')
+const validatorEmail = require("email-validator");
+const validatorCpf = require('cpf-cnpj-validator');
+const validador = require('../helpers/validate')
 
-module.exports = class medicControllers{
+module.exports = class medicControllers {
 
     static async register(req, res) {
-        const { name, age, crm,contact ,email, rg, cpf,available,password, confpassword } = req.body 
+
+        const { name, age, crm, contact, email, rg, cpf, available, password, confpassword } = req.body;
+
+        //console.log(Medic.schema.obj); 
+        const valida = validador.validate(req, Medic)
         
-        //? Validate
-        if (!name) {
-            res.status(422).json({ message: 'O campo nome é obrigatorio' })
-            return
+        if (!valida) {
+            console.log('estou no valida')
         }
 
-        if (age) {
-            if (age <= 21) {
-                res.status(422).json({ message: 'Idade invalida' })
-                return
-            }
-        } else {
-            res.status(422).json({ message: 'O campo idade é obrigatorio' })
-            return            
-        }
-
-        if (!crm) {
-            res.status(422).json({ message: 'O campo crm é obrigatorio' })
-            return
-        }
-
-        if (!contact) {
-            res.status(422).json({ message: 'O campo telefone é obrigatorio' })
-            return
-        }
-        
-        if (email) {
-            const validador = validatorEmail.validate(email)
-            if (!validador) {
-                res.status(422).json({ message: 'Email invalido' })
-                    return               
-            }
-        } else {
-            res.status(422).json({ message: 'O campo email é obrigatorio' })
-                return            
-        }
-
-        if (rg) {
-            const validator = ValidatorRg.rg(rg)
-            if (!validator) {
-                res.status(422).json({ message: 'O rg invalido' })
-                    return                      
-            }
-        } else {
-            res.status(422).json({ message: 'O campo rg é obrigatorio' })
-                return
-        }
-
-        if (cpf) {
-            const validator = validatorCpf.cpf.isValid(cpf)
-            if (!validator) {
-                res.status(422).json({ message: 'O cpf invalido' })
-                    return                      
-            }
-        } else {
-            res.status(422).json({ message: 'O campo cpf é obrigatorio' })
-                return
-        }
-
-        if (!available) {
-            res.status(422).json({ message: 'O Campo available é obrigatorio' })
-                return   
-        }
-
-        if (!password) {
-            res.status(422).json({ message: 'O Campo senha é obrigatorio' })      
-            return
-        }
-
-        if (!confpassword) {
-            res.status(422).json({ message: 'O Campo de confirmação de senha é obrigatorio' })      
-            return    
-        }
-
-        if (password != confpassword) {
-            res.status(422).json({ message: 'Ambas as senhas não são iguais' })      
-            return      
-        }
-        
         //? Mask of cpf
-        const maskcpf = validatorCpf.cpf.format(cpf)
+        
 
         const medic = new Medic({
             name: name,
@@ -104,7 +32,7 @@ module.exports = class medicControllers{
             contact:contact,
             email: email,
             rg: rg,
-            cpf: maskcpf,
+            cpf: cpf,
             available: available,
             password:password
             
@@ -140,14 +68,17 @@ module.exports = class medicControllers{
             return   
         }
 
-        const checkPassword = await Medic.findOne({ password: senha})
+        // const checkPassword = await Medic.findOne({ password: senha})
         
-        if (!checkPassword) {
+        if (senha !== medic.password) {
             res.status(422).json({ message: 'Email ou senha incorretas' })
             return
         }
 
-        await creatToken(medic,req,res)
+        await creatToken({
+            id: medic.id,
+            email: medic.email
+        }, req, res)
     }
     static async checkMedic(req, res) {
     let currentUser
@@ -179,8 +110,5 @@ module.exports = class medicControllers{
         }
 
         res.status(200).json({ medic })
-    }
+    } 
 }
-
-
-

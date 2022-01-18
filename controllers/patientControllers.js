@@ -4,7 +4,6 @@ const Patient = require('../models/patient')
 const creatToken = require("../helpers/creat_token")
 const getToken = require("../helpers/getToken")
 const medic_by_token = require("../helpers/get_medic_by_token")
-
 //* Validadors
 const validatorEmail = require("email-validator")
 const validatorCpf = require('cpf-cnpj-validator')

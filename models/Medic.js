@@ -6,33 +6,28 @@ const Medic = mongoose.model(
     new Schema({
         name: {
             type: String,
-            required: true
+            required: true,
         },
-
         age: {
             type: Number,
-            required: true
+           
         },
         contact: {
             type: String,
             required: true
         },
-
         crm: {
             type: Number,
             required:true
         },
-
         email: {
             type: String,
             required: true
         },
-
         rg: {
             type: String,
             required: true
         },
-
         cpf: {
             type: String,
             required:true
@@ -40,6 +35,7 @@ const Medic = mongoose.model(
         available: {
             type: Boolean,
             defaultValue: true,
+            require: true
         },
         password: {
             type: String,
